@@ -1,0 +1,26 @@
+{
+  "name": "monaco-botframework-lu",
+  "version": "1.0.0",
+  "description": "Microsoft botframework-lu support for Monaco Editor",
+  "scripts": {
+    "compile-amd": "tsc -p ./src/tsconfig.json",
+    "compile-esm": "tsc -p ./src/tsconfig.esm.json",
+    "compile": "mrmdir ./release && npm run compile-amd && npm run compile-esm",
+    "watch": "tsc -p ./src --watch",
+    "prepublishOnly": "npm run compile && node ./scripts/bundle"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "devDependencies": {
+    "monaco-editor-core": "^0.16.0",
+    "monaco-languages": "^1.7.0",
+    "monaco-plugin-helpers": "^1.0.2",
+    "requirejs": "^2.3.6",
+    "typescript": "^3.5.1",
+    "uglify-js": "^3.4.9"
+  }
+}

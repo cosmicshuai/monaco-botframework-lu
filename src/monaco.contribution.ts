@@ -52,7 +52,7 @@ export class LanguageServiceDefaultsImpl {
 	}
 }
 
-const LGDefaults = new LanguageServiceDefaultsImpl();
+const LUDefaults = new LanguageServiceDefaultsImpl();
 
 // --- Registration to monaco editor ---
 function getMode(): Promise<typeof mode> {
@@ -66,13 +66,13 @@ monaco.editor.defineTheme('lutheme', {
 	rules: [
 		{ token: 'intent', foreground: '0000FF' },
 		{ token: 'utterance', foreground: '79571E' },
-		//{ token: 'keywords', foreground: '0000FF' },
-		//{ token: 'comments', foreground: '7A7A7A' },
-		//{ token: 'number', foreground: '00A32B' },
-		//{ token: 'string', foreground: 'DF2C2C' },
-		//{ token: 'structure-name', foreground: '00B7C3' },
+		{ token: 'entity', foreground: '0000FF' },
+		{ token: 'comments', foreground: '7A7A7A' },
+		{ token: 'import-desc', foreground: '00A32B' },
+		{ token: 'new-entity', foreground: 'DF2C2C' },
+		{ token: 'QnA', foreground: '00B7C3' },
 	]
 });
 monaco.languages.onLanguage('botframeworklu', () => {
-	return getMode().then(mode => mode.setupLG(LGDefaults));
+	return getMode().then(mode => mode.setupLU(LUDefaults));
 });

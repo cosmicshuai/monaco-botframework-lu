@@ -51,20 +51,24 @@ function setupMode(defaults: LanguageServiceDefaultsImpl, modeId: string): (firs
 			[/^\s*\$/, {token: 'entity-identifier', goBack: 1, next:'@entity_mode'}],
 			[/^\s*@/, {token: 'new-entity-identifier', goBack: 1, next:'@new_entity_mode'}],
 			[/^\s*>\s*[\s\S]*$/, {token: 'comments'}],
-			[/(^\s*\[)([a-zA-Z0-9._ ]+)(\]\(.{1,2}\/)([a-zA-Z0-9_.*]+)((?:#[a-zA-Z0-9._?]+)?)(\))/,['left_bracket','import-desc','delimeter','file-name','ref-intent','right-parent']],
+			[/(^\s*\[)1([a-zA-Z0-9._ ]+)(\]\(.{1,2}\/)([a-zA-Z0-9_.*]+)((?:#[a-zA-Z0-9._?]+)?)(\))/,['left_bracket','import-desc','delimeter','file-name','ref-intent','right-parent']],
 			],
-			
 			QnA :[
 				[/.$/,'QnA', '@pop'],
 				[/./,'QnA']
 			],
 
             intent: [
-				[/.$/,'intent', '@pop'],
-				[/^\s*(-|\*|\+)/, {token: 'utterance-identifier', next:'@utterance'}],
-				[/^\s*#/, {token: 'intent', next:'@intent'}],
-                [/./, 'intent'],
-            ],
+				[/^\s*-/, {token: 'intent-body-identifier', next:'@intent_body'}],
+				[/([a-zA-Z0-9_][a-zA-Z0-9_-]*)(\.[a-zA-Z0-9_][a-zA-Z0-9_-]*)*/,'intent-name']
+			],
+			
+			intent_body : [
+				// insert expression
+				[/^\s*-/, {token: 'intent-body-identifier', next:'@intent_body'}],
+				// rule of pop intent-body
+				[/./, 'normail-intent-string'],
+			],
 
             utterance : 
             [

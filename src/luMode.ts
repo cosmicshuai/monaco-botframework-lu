@@ -47,7 +47,6 @@ function setupMode(defaults: LanguageServiceDefaultsImpl, modeId: string): (firs
 			root:[
 			[/^\s*#\s*\?/, {token: 'QnA', next:'@QnA'}],
             [/^\s*#/, {token: 'intent', next:'@intent'}],
-			[/^\s*(-|\*|\+)/, {token: 'utterance-identifier', next:'@utterance'}],
 			[/^\s*\$/, {token: 'entity-identifier', goBack: 1, next:'@entity_mode'}],
 			[/^\s*@/, {token: 'new-entity-identifier', goBack: 1, next:'@new_entity_mode'}],
 			[/^\s*>\s*[\s\S]*$/, {token: 'comments'}],
@@ -64,39 +63,18 @@ function setupMode(defaults: LanguageServiceDefaultsImpl, modeId: string): (firs
 			],
 			
 			intent_body : [
-				// insert expression
-				[/^\s*-/, {token: 'intent-body-identifier', next:'@intent_body'}],
-				// rule of pop intent-body
+				[/^\s*(-|\+|\*)/, {token: 'intent-body-identifier', next:'@intent_body'}],
+				[/^\s*#\s*\?/, {token: 'QnA', next:'@QnA'}],
+				[/^\s*#/, {token: 'intent', next:'@intent'}],
+				[/^\s*\$/, {token: 'entity-identifier', goBack: 1, next:'@entity_mode'}],
+				[/^\s*@/, {token: 'new-entity-identifier', goBack: 1, next:'@new_entity_mode'}],
+				[/\{ (~[\r\n{}] | ('{' ~[\r\n]* }))* \}/,'expression'],
 				[/./, 'normail-intent-string'],
-			],
-
-            utterance : 
-            [
-				[/.$/,'utterance', '@pop'],
-                [/^\s*#/, {token: 'intent', next:'@intent'}],
-                [/./, 'utterance'],
-			],
-			
-			entity_mode : [
-				[/.$/,'entity', '@pop'],
-				[/./,'entity'],
 			],
 
 			new_entity_mode :
 			[
-				[/.$/,'new-entity', '@pop'],
-			// [/@\s*ml\s+/, {token :'ml-entity-identifier', next: '@ml_entity'}],
-			// [/@\s*prebuilt\s+/, {token :'prebuilt-entity-identifier', next: '@prebuilt_entity'}],
-			// [/@\s*simple\s+/, {token :'simple-entity-identifier', next: '@simple_entity'}],
-			// [/@\s*patternany\s+/, {token :'patternany-entity-identifier', next: '@patternany_entity'}],
-			// [/@\s*phraselist\s+/, {token :'phraselist-entity-identifier', next: '@phraselist_entity'}],
-			// [/@\s*intent\s+/, {token :'intent-entity-identifier', next: '@intent_entity'}],
-			// [/@\s*composite \s*[a-zA-Z][a-zA-Z0-9_.]*\s*([a-zA-Z][a-zA-Z0-9_.]*\s*)(,\s*[a-zA-Z][a-zA-Z0-9_.]*\s*)*=/, {token :'composite-entity-identifier', next: '@composite_entity'}],
-			// [/@\s*regex\s+/, {token :'regex-entity-identifier', next: '@regex-entity'}],
-			// [/@\s*list\s+[a-zA-Z][a-zA-Z0-9_.]*\s+([a-zA-Z][a-zA-Z0-9_.]*\s*)(,\s*[a-zA-Z][a-zA-Z0-9_.]*\s*)*=/, {token :'list-entity-identifier', next: '@list_entity'}],
-			// [/@\s*list\s*/, {token :'list-entity-identifier', next: '@list_entity'}],
-			// [/@\s*[a-zA-Z][a-zA-Z0-9_.]*\s+=/, {token :'list-entity-identifier', next: '@list_entity'}],
-			[/./, 'new-entity']
+				[/@\s*(simple|list|regex|prebuilt|composite|ml|patternany|phraselist|intent)/,]
 			],
 
 			// ml_entity : [

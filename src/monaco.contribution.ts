@@ -64,13 +64,13 @@ monaco.editor.defineTheme('lutheme', {
 	inherit: false,
 	colors:{},
 	rules: [
-		{ token: 'intent', foreground: '0000FF' },
-		{ token: 'utterance', foreground: '79571E' },
-		{ token: 'entity', foreground: '0000FF' },
+		{ token: 'intent-name', foreground: '0000FF' },
+		{ token: 'pattern', foreground: '79571E' },
+		{ token: 'entity-name', foreground: '0000FF' },
 		{ token: 'comments', foreground: '7A7A7A' },
 		{ token: 'import-desc', foreground: '00A32B' },
-		{ token: 'new-entity', foreground: 'DF2C2C' },
-		{ token: 'QnA', foreground: '00B7C3' },
+		{ token: 'entity-type', foreground: 'DF2C2C' },
+		//{ token: 'QnA', foreground: '00B7C3' },
 	]
 });
 monaco.languages.onLanguage('botframeworklu', () => {

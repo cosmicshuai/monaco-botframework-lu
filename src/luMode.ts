@@ -45,57 +45,71 @@ function setupMode(defaults: LanguageServiceDefaultsImpl, modeId: string): (firs
 		],
 		tokenizer: {
 			root:[
-			[/^\s*#\s*\?/, {token: 'QnA', goBack: 1, next:'@QnA'}],
-            [/^\s*#/, {token: 'intent', next:'@intent'}],
-			[/^\s*\$/, {token: 'entity-identifier', goBack: 1, next:'@entity_mode'}],
-			[/^\s*@/, {token: 'new-entity-identifier', goBack: 1, next:'@new_entity_mode'}],
+			//[/^\s*#\s*\?/, {token: 'QnA', goBack: 1, next:'@QnA'}],
+            [/^\s*#/, {token: 'intent-indentifier', next:'@intent'}],
+			//[/^\s*\$/, {token: 'entity-identifier', goBack: 1, next:'@entity_mode'}],
+			[/^\s*@/, {token: 'entity-identifier', goBack: 1, next:'@entity_mode'}],
 			[/^\s*>\s*[\s\S]*$/, {token: 'comments'}],
-			[/(^\s*\[)1([a-zA-Z0-9._ ]+)(\]\(.{1,2}\/)([a-zA-Z0-9_.*]+)((?:#[a-zA-Z0-9._?]+)?)(\))/,['left_bracket','import-desc','delimeter','file-name','ref-intent','right-parent']],
 			],
 
             intent: [
-				[/^\s*-/, {token: 'intent-body-identifier', next:'@intent_body'}],
-				[/([a-zA-Z0-9_][a-zA-Z0-9_-]*)(\.[a-zA-Z0-9_][a-zA-Z0-9_-]*)*/,'intent-name']
+				[/^\s*-/, {token: 'utterrance-indentifier', next:'@utterrance'}],
+				[/^\s*>\s*[\s\S]*$/, {token: 'comments'}],
+				[/.*$/, 'intent-name']
 			],
-			
-			intent_body : [
-				[/^\s*(-|\+|\*)/, {token: 'intent-body-identifier', next:'@intent_body'}],
-				[/^\s*#\s*\?/, {token: 'QnA', next:'@QnA'}],
+			utterrance: [
 				[/^\s*#/, {token: 'intent', next:'@intent'}],
-				[/^\s*\$/, {token: 'entity-identifier', goBack: 1, next:'@entity_mode'}],
-				[/^\s*@/, {token: 'new-entity-identifier', goBack: 1, next:'@new_entity_mode'}],
-				[/\{([^\r\n{}]|('{'[^\r\n]*'}'))*\}/,'expression'],
-				[/./, 'normail-intent-string'],
-			],
+				[/^\s*>\s*[\s\S]*$/, {token: 'comments'}],
+				[/^\s*-/, {token: 'utterrance-indentifier', next:'utterrance'}],
+				[/({)(\s*[\w.]*\s*)(=)(\s*[\w.]*\s*)(})/, ['lb', 'pattern', 'equal', 'entity-name', 'rb']],
+				[/^\s*\[[a-zA-Z0-9._ ]+\]\(.{1,2}\/[a-zA-Z0-9_.*]+(#[a-zA-Z0-9._?]+)?\)/, 'import-desc'],
+				[/./, 'utterance-other']
+			], 
+			entity_mode: [
+				[/(@\s*)(ml|prebuilt|regex|list|composite|patternany|phraselist)(\s*\w*)/, ['intent-indentifier', 'entity-type', 'entity-name']],
+				[/(@\s*)(\s*\w*)/, ['intent-indentifier', 'entity-name']],
+				[/.*$/, 'entity-other', '@pop']
+			]
 
-			new_entity_mode :
-			[
-				[/@\s*((?:[a-z]+)?)\s*(?:([a-zA-Z0-9_\-\|\.\(\)]+)|((?:'|")([a-zA-Z0-9_\-\|\.\(\)\s]+)(?:'|")))\s*(((hasrole)(s)?)?\s*(([^ \t\r\n.,;]+\s*)(,\s*[^ \t\r\n.,;]+)*))?\s*=?\s*((\[([^\r\n{}[()])*\])|(\/([^\r\n])*\/))?/,
-				'new-entity-definition'],
-				[/.$/,'new-entity-end', '@pop']
-			],
+			
+			// intent_body : [
+			// 	[/^\s*(-|\+|\*)/, {token: 'intent-body-identifier', next:'@intent_body'}],
+			// 	[/^\s*#\s*\?/, {token: 'QnA', next:'@QnA'}],
+			// 	[/^\s*#/, {token: 'intent', next:'@intent'}],
+			// 	[/^\s*\$/, {token: 'entity-identifier', goBack: 1, next:'@entity_mode'}],
+			// 	[/^\s*@/, {token: 'new-entity-identifier', goBack: 1, next:'@new_entity_mode'}],
+			// 	[/\{([^\r\n{}]|('{'[^\r\n]*'}'))*\}/,'expression'],
+			// 	[/./, 'normail-intent-string'],
+			// ],
 
-			entity_mode : [
-				[/\$\s*(([a-zA-Z0-9_\-\|\.]+)|(\s*))\s*(:)\s*(([a-zA-Z0-9_\-\|\.]+)|(\[([^\r\n{}[()])*)|(\/([^\r\n])*)|(=|,|\!)|(:)|(\s))*/,'entity-line'],
-				[/^\s*-/,{token : 'entity-body-identifier', next: '@entity_body'}]
-				//pop rule
-			],
+			// new_entity_mode :
+			// [
+			// 	[/@\s*((?:[a-z]+)?)\s*(?:([a-zA-Z0-9_\-\|\.\(\)]+)|((?:'|")([a-zA-Z0-9_\-\|\.\(\)\s]+)(?:'|")))\s*(((hasrole)(s)?)?\s*(([^ \t\r\n.,;]+\s*)(,\s*[^ \t\r\n.,;]+)*))?\s*=?\s*((\[([^\r\n{}[()])*\])|(\/([^\r\n])*\/))?/,
+			// 	'new-entity-definition'],
+			// 	[/.$/,'new-entity-end', '@pop']
+			// ],
 
-			entity_body : [
-				[/^\s*-/,{token : 'entity-body-identifier', next: '@entity_body'}],
-				[/\{([^\r\n{}]|('{'[^\r\n]*'}'))*\}/,'expression']
-			],
+			// entity_mode : [
+			// 	[/\$\s*(([a-zA-Z0-9_\-\|\.]+)|(\s*))\s*(:)\s*(([a-zA-Z0-9_\-\|\.]+)|(\[([^\r\n{}[()])*)|(\/([^\r\n])*)|(=|,|\!)|(:)|(\s))*/,'entity-line'],
+			// 	[/^\s*-/,{token : 'entity-body-identifier', next: '@entity_body'}]
+			// 	//pop rule
+			// ],
 
-			QnA : [
-				[/\?((\s)|([^/r/n\t{}]+)*)/,'qnaText'],
-				[/^\s*-((\s)|([^\s\t\r\n{}]))*/,'moreQuestion'],
-				[/^\*\*Filters:\*\*/, {token: 'QnAanswer-Identifier', next:'@QnAanswer'}],
-			],
+			// entity_body : [
+			// 	[/^\s*-/,{token : 'entity-body-identifier', next: '@entity_body'}],
+			// 	[/\{([^\r\n{}]|('{'[^\r\n]*'}'))*\}/,'expression']
+			// ],
 
-			QnAanswer : [
-			[/^\s*-\s*((\s)|([^/r/n\t{}]+))*/, 'filterLine'],
-			[/`{3}\s*markdown .*? `{3}/, 'multiline_text'],
-			],
+			// QnA : [
+			// 	[/\?((\s)|([^/r/n\t{}]+)*)/,'qnaText'],
+			// 	[/^\s*-((\s)|([^\s\t\r\n{}]))*/,'moreQuestion'],
+			// 	[/^\*\*Filters:\*\*/, {token: 'QnAanswer-Identifier', next:'@QnAanswer'}],
+			// ],
+
+			// QnAanswer : [
+			// [/^\s*-\s*((\s)|([^/r/n\t{}]+))*/, 'filterLine'],
+			// [/`{3}\s*markdown .*? `{3}/, 'multiline_text'],
+			// ],
 		}
 	});
 	return worker;

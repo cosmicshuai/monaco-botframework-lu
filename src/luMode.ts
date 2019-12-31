@@ -37,39 +37,46 @@ function setupMode(defaults: LanguageServiceDefaultsImpl, modeId: string): (firs
 	};
 
 	monaco.languages.setMonarchTokensProvider('botframeworklu', {
-		ignoreCase: true,
 		brackets: [
 			{ open: '{', close: '}', token: 'delimiter.curly' },
 			{ open: '[', close: ']', token: 'delimiter.bracket' },
 			{ open: '(', close: ')', token: 'delimiter.parenthesis' }
 		],
 		tokenizer: {
-			root:[
-			//[/^\s*#\s*\?/, {token: 'QnA', goBack: 1, next:'@QnA'}],
-            [/^\s*#/, {token: 'intent-indentifier', next:'@intent'}],
-			//[/^\s*\$/, {token: 'entity-identifier', goBack: 1, next:'@entity_mode'}],
-			[/^\s*@/, {token: 'entity-identifier', goBack: 1, next:'@entity_mode'}],
-			[/^\s*>\s*[\s\S]*$/, {token: 'comments'}],
-			],
-
-            intent: [
-				[/^\s*-/, {token: 'utterrance-indentifier', next:'@utterrance'}],
-				[/^\s*>\s*[\s\S]*$/, {token: 'comments'}],
-				[/.*$/, 'intent-name']
-			],
-			utterrance: [
-				[/^\s*#/, {token: 'intent', next:'@intent'}],
-				[/^\s*>\s*[\s\S]*$/, {token: 'comments'}],
-				[/^\s*-/, {token: 'utterrance-indentifier', next:'utterrance'}],
+			root: [
+				[/^\s*#/, { token: 'intent-indentifier', next: '@intent' }],
+				[/^\s*@/, { token: 'entity-identifier', goBack: 1, next: '@entity_mode' }],
+				[/^\s*>\s*[\s\S]*$/, { token: 'comments' }],
+			  ],
+		
+			  intent: [
+				[/^\s*#/, { token: 'intent-indentifier', next: '@intent' }],
+				[/^\s*-/, { token: 'utterrance-indentifier', next: '@utterrance' }],
+				[/^\s*>\s*[\s\S]*$/, { token: 'comments' }],
+				[/^\s*@/, { token: 'entity-identifier', goBack: 1, next: '@entity_mode' }],
+				[/.*$/, 'intent-name'],
+			  ],
+			  utterrance: [
+				[/^\s*#/, { token: 'intent', next: '@intent' }],
+				[/^\s*>\s*[\s\S]*$/, { token: 'comments' }],
+				[/^\s*-/, { token: 'utterrance-indentifier', next: 'utterrance' }],
+				[/^\s*@/, { token: 'entity-identifier', goBack: 1, next: '@entity_mode' }],
 				[/({)(\s*[\w.]*\s*)(=)(\s*[\w.]*\s*)(})/, ['lb', 'pattern', 'equal', 'entity-name', 'rb']],
-				[/^\s*\[[a-zA-Z0-9._ ]+\]\(.{1,2}\/[a-zA-Z0-9_.*]+(#[a-zA-Z0-9._?]+)?\)/, 'import-desc'],
-				[/./, 'utterance-other']
-			], 
-			entity_mode: [
-				[/(@\s*)(ml|prebuilt|regex|list|composite|patternany|phraselist)(\s*\w*)/, ['intent-indentifier', 'entity-type', 'entity-name']],
+				[/^\s*\[[\w\s.]+\]\(.{1,2}\/[\w.*]+(#[\w.?]+)?\)/, 'import-desc'],
+				[/./, 'utterance-other'],
+			  ],
+			  entity_mode: [
+				[/^\s*#/, { token: 'intent', next: '@intent' }],
+				[/^\s*>\s*[\s\S]*$/, { token: 'comments' }],
+				[/^\s*-/, { token: 'utterrance-indentifier', next: 'utterrance' }],
+				[
+				  /(@\s*)(ml|prebuilt|regex|list|composite|patternany|phraselist)(\s*\w*)/,
+				  ['intent-indentifier', 'entity-type', 'entity-name'],
+				],
 				[/(@\s*)(\s*\w*)/, ['intent-indentifier', 'entity-name']],
-				[/.*$/, 'entity-other', '@pop']
-			]
+				[/\s*(hasRoles|useFeature)\s*/, 'keywords'],
+				[/.*$/, 'entity-other', '@pop'],
+			  ],
 
 			
 			// intent_body : [

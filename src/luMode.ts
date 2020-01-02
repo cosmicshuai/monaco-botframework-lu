@@ -61,8 +61,8 @@ function setupMode(defaults: LanguageServiceDefaultsImpl, modeId: string): (firs
 				[/^\s*>\s*[\s\S]*$/, { token: 'comments' }],
 				[/^\s*-/, { token: 'utterrance-indentifier', next: 'utterrance' }],
 				[/^\s*@/, { token: 'entity-identifier', goBack: 1, next: '@entity_mode' }],
-				[/({)(\s*[\w.]*\s*)(=)(\s*[\w.]*\s*)(})/, ['lb', 'pattern', 'equal', 'entity-name', 'rb']],
-				[/^\s*\[[\w\s.]+\]\(.{1,2}\/[\w.*]+(#[\w.?]+)?\)/, 'import-desc'],
+				[/({)(\s*[\w.\:\s]*\s*)(=)(\s*[\w.]*\s*)(})/, ['lb', 'pattern', 'equal', 'entity-name', 'rb']],
+				[/\s*\[[\w\s.]+\]\(.{1,2}\/[\w.*]+(#[\w.?]+)?\)/, 'import-desc'],
 				[/./, 'utterance-other'],
 			  ],
 			  entity_mode: [

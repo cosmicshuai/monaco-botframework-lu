@@ -68,7 +68,7 @@ monaco.editor.defineTheme('lutheme', {
       { token: 'pattern', foreground: '00B7C3' },
       { token: 'entity-name', foreground: '038387' },
       { token: 'comments', foreground: '7A7A7A' },
-      { token: 'import-desc', foreground: '00A32B' },
+      { token: 'import-desc', foreground: '7A7A7A' },
       { token: 'entity-type', foreground: 'DF2C2C' },
       { token: 'keywords', foreground: '0078D7' },
 	]
